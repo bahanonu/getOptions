@@ -4,27 +4,30 @@ function [options] = getOptions(options,inputArgs,varargin)
 	% Started: 2013.11.04.
 	%
 	% inputs
-		% options - structure with options.
+		% options - structure passed by parent function with each fieldname containing an option to be used by the parent function.
 		% inputArgs - an even numbered cell array, with {'option','value'} as the ordering. Normally pass varargin.
 	% Outputs
-		% options - options structure with inputs to function added.
+		% options - options structure passed back to parent function with modified Name-Value inputs to function added.
 	% NOTE
-		% use the 'options' name-value pair to input an options structure that will overwrite default options in a function, example below.
+		% Use the 'options' name-value pair to input an options structure that will overwrite default options in a function, example below.
 		% options.Stargazer = 1;
 		% options.SHH = 0;
 		% getMutations(mutationList,'options',options);
-
+		%
 		% This is in contrast to using name-value pairs, both will produce the same result.
 		% getMutations(mutationList,'Stargazer',1,'SHH',0);
-	%
+		%
 	% USAGE
 		% function [input1,input2] = exampleFxn(input1,input2,varargin)
 		% 	%========================
 		% 	% DESCRIPTION
 		% 	options.Stargazer = '';
+		%	% DESCRIPTION
 		% 	options.SHH = '';
+		%	% DESCRIPTION
+		% 	options.Option3 = '';
 		% 	% get options
-		% 	options = getOptions(options,varargin);
+		% 	options = getOptions(options,varargin); % ***HERE IS WHERE getOptions IS USED***
 		% 	% display(options)
 		% 	% unpack options into current workspace
 		% 	% fn=fieldnames(options);
@@ -48,15 +51,17 @@ function [options] = getOptions(options,inputArgs,varargin)
 		% 2015.08.24 [23:31:36] - updated comments. - Biafra
 		% 2015.12.03 [13:52:15] - Added recursive aspect to mirrorRightStruct and added support for handling struct name-value inputs. mirrorRightStruct checks that struct options input by the user are struct in the input options. - Biafra
 		% 2016.xx.xx - warnings now show both calling function and it's parent function, improve debug for warnings. Slight refactoring of code to make easier to follow. - Biafra
+		% 2020.05.10 [18:00:23] - Updates to comments in getOptions and other minor changes.
 
 	% TODO
-		% allow input of an option structure - DONE!
-		% call settings function to have defaults for all functions in a single place - DONE!
-		% allow recursive overwriting of options structure - DONE!
+		% Allow input of an option structure - DONE!
+		% Call settings function to have defaults for all functions in a single place - DONE!
+		% Allow recursive overwriting of options structure - DONE!
 		% Type checking of all field names input by the user?
 
 	%========================
-	% Options for getOptions. Avoid recursion here, hence don't use getOptions for getOptions's options.
+	% Options for getOptions.
+	% Avoid recursion here, hence don't use getOptions for getOptions's options.
 	% Binary: 1 = whether getOptions should use recursive structures or crawl through a structure's field names or just replace the entire structure. For example, if "1" then options that themselves are a structure or contain sub-structures, the fields will be replaced rather than the entire strucutre.
 	goptions.recursiveStructs = 1;
 	% Binary: 1 = show warning if user inputs Name-Value pair option input that is not in original structure.
@@ -65,7 +70,7 @@ function [options] = getOptions(options,inputArgs,varargin)
 	goptions.nParentStacks = 1;
 	% Binary: 1 = get defaults for a function from getSettings.
 	goptions.getFunctionDefaults = 0;
-	% Filter through options
+	% Update getOptions's options based on user input.
 	try
 		for i = 1:2:length(varargin)
 			inputField = varargin{i};
@@ -175,7 +180,7 @@ function localShowWarnings(stackLevel,displayType,toStructName,fromField,val,nPa
 		% Get the entire function-call stack.
 		[ST,~] = dbstack;
 		callingFxn = ST(stackLevel).name;
-		callingFxnPath=which(ST(stackLevel).file);
+		callingFxnPath = which(ST(stackLevel).file);
 		callingFxnLine = num2str(ST(stackLevel).line);
 
 		% Add info about parent function of function that called getOptions.
