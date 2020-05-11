@@ -4,6 +4,8 @@
 
 Please see my 2014 write-up __[dealing with variable options (varargin) in matlab](https://bahanonu.com/getOptions)__ ([https://bahanonu.com/getOptions](https://bahanonu.com/getOptions)) for details and reasons behind implementing and using this function. Installation and usage instructions below.
 
+[![View getOptions on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/75464-getoptions)
+
 Contact: __Biafra Ahanonu, PhD (bahanonu [at] alum [dot] mit [dot] edu)__.
 
 Made in USA.<br>
@@ -17,6 +19,8 @@ Test by running `unitTestGetOptions` unit test. Will print out the modified stru
 
 ## Instructions on use
 There are two ways to have parent functions pass Name-Value pairs to child functions that `getOptions` will parse to update default options in child function.
+
+__Note_ that `getOptions` has a `recursiveStructs` optional Name-Value input argument itself that if enabled (the default), causes `getOptions` to crawl through any options that are structures and replace only fieldnames that are present in the options passed by the parent function. If this is disabled, `getOptions` will replace any options that are structures with the entire structure input by the user regardless of whether the default options had a specific structure.
 
 ### Method #1
 Use the `'options', options` [Name-Value](https://www.mathworks.com/help/matlab/ref/varargin.html) pair to input an `options` structure that will overwrite default options in a function.
